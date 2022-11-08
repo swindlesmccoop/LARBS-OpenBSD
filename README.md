@@ -2,7 +2,7 @@
 
 ## Installation:
 
-On an Arch-based distribution as root, run the following:
+On OpenBSD as root, run the following:
 
 ```
 curl -LO larbs.xyz/larbs.sh
@@ -14,9 +14,9 @@ That's it.
 ## What is LARBS?
 
 LARBS is a script that autoinstalls and autoconfigures a fully-functioning
-and minimal terminal-and-vim-based Arch Linux environment.
+and minimal terminal-and-vim-based OpenBSD environment.
 
-LARBS can be run on a fresh install of Arch or Artix Linux, and provides you
+LARBS can be run on a fresh install of OpenBSD, and provides you
 with a fully configured diving-board for work or more customization.
 
 ## Customization
