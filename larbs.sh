@@ -2,19 +2,20 @@
 
 # Luke's Auto Rice Boostrapping Script (LARBS)
 # by Luke Smith <luke@lukesmith.xyz>
+# and Swindles McCoop <swindlesmccoop@waifu.club>
 # License: GNU GPLv3
 
 ### OPTIONS AND VARIABLES ###
 
-dotfilesrepo="https://github.com/lukesmithxyz/voidrice.git"
-progsfile="https://raw.githubusercontent.com/LukeSmithxyz/LARBS/master/progs.csv"
-aurhelper="yay"
+dotfilesrepo="https://github.com/swindlesmccoop/voidrice-openbsd.git"
+progsfile="https://raw.githubusercontent.com/swindlesmccoop/LARBS-OpenBSD/master/progs.csv"
+#aurhelper="yay"
 repobranch="master"
 
 ### FUNCTIONS ###
 
 installpkg() {
-	pacman --noconfirm --needed -S "$1" >/dev/null 2>&1
+	pkg_add "$1" >/dev/null 2>&1
 }
 
 error() {
@@ -24,38 +25,39 @@ error() {
 }
 
 welcomemsg() {
-	whiptail --title "Welcome!" \
-		--msgbox "Welcome to Luke's Auto-Rice Bootstrapping Script!\\n\\nThis script will automatically install a fully-featured Linux desktop, which I use as my main machine.\\n\\n-Luke" 10 60
+	dialog --title "Welcome!" \
+		--msgbox "Welcome to Luke's Auto-Rice Bootstrapping Script!\\n\\nThis script will automatically install a fully-featured OpenBSD desktop.\\n\\n-Luke" 10 60
 
-	whiptail --title "Important Note!" --yes-button "All ready!" \
+	dialog --title "Important Note!" --yes-button "All ready!" \
 		--no-button "Return..." \
-		--yesno "Be sure the computer you are using has current pacman updates and refreshed Arch keyrings.\\n\\nIf it does not, the installation of some programs might fail." 8 70
+		#--yesno "Be sure the computer you are using has current pacman updates and refreshed Arch keyrings.\\n\\nIf it does not, the installation of some programs might fail." 8 70
+		--yesno "IGNORE MSG" 8 70
 }
 
 getuserandpass() {
 	# Prompts user for new username an password.
-	name=$(whiptail --inputbox "First, please enter a name for the user account." 10 60 3>&1 1>&2 2>&3 3>&1) || exit 1
+	name=$(dialog --inputbox "First, please enter a name for the user account." 10 60 3>&1 1>&2 2>&3 3>&1) || exit 1
 	while ! echo "$name" | grep -q "^[a-z_][a-z0-9_-]*$"; do
-		name=$(whiptail --nocancel --inputbox "Username not valid. Give a username beginning with a letter, with only lowercase letters, - or _." 10 60 3>&1 1>&2 2>&3 3>&1)
+		name=$(dialog --nocancel --inputbox "Username not valid. Give a username beginning with a letter, with only lowercase letters, - or _." 10 60 3>&1 1>&2 2>&3 3>&1)
 	done
-	pass1=$(whiptail --nocancel --passwordbox "Enter a password for that user." 10 60 3>&1 1>&2 2>&3 3>&1)
-	pass2=$(whiptail --nocancel --passwordbox "Retype password." 10 60 3>&1 1>&2 2>&3 3>&1)
+	pass1=$(dialog --nocancel --passwordbox "Enter a password for that user." 10 60 3>&1 1>&2 2>&3 3>&1)
+	pass2=$(dialog --nocancel --passwordbox "Retype password." 10 60 3>&1 1>&2 2>&3 3>&1)
 	while ! [ "$pass1" = "$pass2" ]; do
 		unset pass2
-		pass1=$(whiptail --nocancel --passwordbox "Passwords do not match.\\n\\nEnter password again." 10 60 3>&1 1>&2 2>&3 3>&1)
-		pass2=$(whiptail --nocancel --passwordbox "Retype password." 10 60 3>&1 1>&2 2>&3 3>&1)
+		pass1=$(dialog --nocancel --passwordbox "Passwords do not match.\\n\\nEnter password again." 10 60 3>&1 1>&2 2>&3 3>&1)
+		pass2=$(dialog --nocancel --passwordbox "Retype password." 10 60 3>&1 1>&2 2>&3 3>&1)
 	done
 }
 
 usercheck() {
 	! { id -u "$name" >/dev/null 2>&1; } ||
-		whiptail --title "WARNING" --yes-button "CONTINUE" \
+		dialog --title "WARNING" --yes-button "CONTINUE" \
 			--no-button "No wait..." \
 			--yesno "The user \`$name\` already exists on this system. LARBS can install for a user already existing, but it will OVERWRITE any conflicting settings/dotfiles on the user account.\\n\\nLARBS will NOT overwrite your user files, documents, videos, etc., so don't worry about that, but only click <CONTINUE> if you don't mind your settings being overwritten.\\n\\nNote also that LARBS will change $name's password to the one you just gave." 14 70
 }
 
 preinstallmsg() {
-	whiptail --title "Let's get this party started!" --yes-button "Let's go!" \
+	dialog --title "Let's get this party started!" --yes-button "Let's go!" \
 		--no-button "No, nevermind!" \
 		--yesno "The rest of the installation will now be totally automated, so you can sit back and relax.\\n\\nIt will take some time, but when done, you can relax even more with your complete system.\\n\\nNow just press <Let's go!> and the system will begin installation!" 13 60 || {
 		clear
@@ -65,7 +67,7 @@ preinstallmsg() {
 
 adduserandpass() {
 	# Adds user `$name` with password $pass1.
-	whiptail --infobox "Adding user \"$name\"..." 7 50
+	dialog --infobox "Adding user \"$name\"..." 7 50
 	useradd -m -g wheel -s /bin/zsh "$name" >/dev/null 2>&1 ||
 		usermod -a -G wheel "$name" && mkdir -p /home/"$name" && chown "$name":wheel /home/"$name"
 	export repodir="/home/$name/.local/src"
@@ -78,11 +80,11 @@ adduserandpass() {
 refreshkeys() {
 	case "$(readlink -f /sbin/init)" in
 	*systemd*)
-		whiptail --infobox "Refreshing Arch Keyring..." 7 40
+		dialog --infobox "Refreshing Arch Keyring..." 7 40
 		pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
 		;;
 	*)
-		whiptail --infobox "Enabling Arch Repositories..." 7 40
+		dialog --infobox "Enabling Arch Repositories..." 7 40
 		if ! grep -q "^\[universe\]" /etc/pacman.conf; then
 			echo "[universe]
 Server = https://universe.artixlinux.org/\$arch
@@ -109,7 +111,7 @@ Include = /etc/pacman.d/mirrorlist-arch" >>/etc/pacman.conf
 manualinstall() {
 	# Installs $1 manually. Used only for AUR helper here.
 	# Should be run after repodir is created and var is set.
-	whiptail --infobox "Installing \"$1\", an AUR helper..." 7 50
+	dialog --infobox "Installing \"$1\", an AUR helper..." 7 50
 	sudo -u "$name" mkdir -p "$repodir/$1"
 	sudo -u "$name" git -C "$repodir" clone --depth 1 --single-branch \
 		--no-tags -q "https://aur.archlinux.org/$1.git" "$repodir/$1" ||
@@ -124,7 +126,7 @@ manualinstall() {
 
 maininstall() {
 	# Installs all needed programs from main repo.
-	whiptail --title "LARBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 9 70
+	dialog --title "LARBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 9 70
 	installpkg "$1"
 }
 
@@ -132,7 +134,7 @@ gitmakeinstall() {
 	progname="${1##*/}"
 	progname="${progname%.git}"
 	dir="$repodir/$progname"
-	whiptail --title "LARBS Installation" \
+	dialog --title "LARBS Installation" \
 		--infobox "Installing \`$progname\` ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 8 70
 	sudo -u "$name" git -C "$repodir" clone --depth 1 --single-branch \
 		--no-tags -q "$1" "$dir" ||
@@ -147,14 +149,14 @@ gitmakeinstall() {
 }
 
 aurinstall() {
-	whiptail --title "LARBS Installation" \
+	dialog --title "LARBS Installation" \
 		--infobox "Installing \`$1\` ($n of $total) from the AUR. $1 $2" 9 70
 	echo "$aurinstalled" | grep -q "^$1$" && return 1
 	sudo -u "$name" $aurhelper -S --noconfirm "$1" >/dev/null 2>&1
 }
 
 pipinstall() {
-	whiptail --title "LARBS Installation" \
+	dialog --title "LARBS Installation" \
 		--infobox "Installing the Python package \`$1\` ($n of $total). $1 $2" 9 70
 	[ -x "$(command -v "pip")" ] || installpkg python-pip >/dev/null 2>&1
 	yes | pip install "$1"
@@ -180,7 +182,7 @@ installationloop() {
 
 putgitrepo() {
 	# Downloads a gitrepo $1 and places the files in $2 only overwriting conflicts
-	whiptail --infobox "Downloading and installing config files..." 7 60
+	dialog --infobox "Downloading and installing config files..." 7 60
 	[ -z "$3" ] && branch="master" || branch="$repobranch"
 	dir=$(mktemp -d)
 	[ ! -d "$2" ] && mkdir -p "$2"
@@ -193,7 +195,7 @@ putgitrepo() {
 
 vimplugininstall() {
 	# Installs vim plugins.
-	whiptail --infobox "Installing neovim plugins..." 7 60
+	dialog --infobox "Installing neovim plugins..." 7 60
 	mkdir -p "/home/$name/.config/nvim/autoload"
 	curl -Ls "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" >  "/home/$name/.config/nvim/autoload/plug.vim"
 	chown -R "$name:wheel" "/home/$name/.config/nvim"
@@ -201,7 +203,7 @@ vimplugininstall() {
 }
 
 finalize() {
-	whiptail --title "All done!" \
+	dialog --title "All done!" \
 		--msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment (it will start automatically in tty1).\\n\\n.t Luke" 13 80
 }
 
@@ -209,7 +211,7 @@ finalize() {
 
 ### This is how everything happens in an intuitive format and order.
 
-# Check if user is root on Arch distro. Install whiptail.
+# Check if user is root on Arch distro. Install dialog.
 pacman --noconfirm --needed -Sy libnewt ||
 	error "Are you sure you're running this as the root user, are on an Arch-based distribution and have an internet connection?"
 
@@ -232,12 +234,12 @@ refreshkeys ||
 	error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
 for x in curl ca-certificates base-devel git ntp zsh; do
-	whiptail --title "LARBS Installation" \
+	dialog --title "LARBS Installation" \
 		--infobox "Installing \`$x\` which is required to install and configure other programs." 8 70
 	installpkg "$x"
 done
 
-whiptail --title "LARBS Installation" \
+dialog --title "LARBS Installation" \
 	--infobox "Synchronizing system time to ensure successful and secure installation of software..." 8 70
 ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 
