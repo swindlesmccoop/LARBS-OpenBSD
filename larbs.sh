@@ -29,8 +29,8 @@ welcomemsg() {
 
 	dialog --title "Important Note!" --yes-button "All ready!" \
 		--no-button "Return..." \
-		#--yesno "Be sure the computer you are using has current pacman updates and refreshed Arch keyrings.\\n\\nIf it does not, the installation of some programs might fail." 8 70
 		--yesno "IGNORE MSG" 8 70
+		#--yesno "Be sure the computer you are using has current pacman updates and refreshed Arch keyrings.\\n\\nIf it does not, the installation of some programs might fail." 8 70
 }
 
 getuserandpass() {
