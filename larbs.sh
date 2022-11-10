@@ -88,22 +88,37 @@ maininstall() {
 	installpkg "$1"
 }
 
+#old_gitmakeinstall() {
+#	progname="${1##*/}"
+#	progname="${progname%.git}"
+#	dir="$repodir/$progname"
+#	dialog --title "LARBS Installation" \
+#		--infobox "Installing \`$progname\` ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 8 70
+#	doas -u "$name" git -C "$repodir" clone --depth 1 --single-branch \
+#		--no-tags -q "$1" "$dir" ||
+#		{
+#			cd "$dir" || return 1
+#			doas -u "$name" git pull --force origin master
+#		}
+#	cd "$dir" || exit 1
+#	gmake >/dev/null 2>&1
+#	gmake install >/dev/null 2>&1
+#	cd /tmp || return 1
+#}
+
 gitmakeinstall() {
-	progname="${1##*/}"
-	progname="${progname%.git}"
-	dir="$repodir/$progname"
 	dialog --title "LARBS Installation" \
-		--infobox "Installing \`$progname\` ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 8 70
-	doas -u "$name" git -C "$repodir" clone --depth 1 --single-branch \
-		--no-tags -q "$1" "$dir" ||
-		{
-			cd "$dir" || return 1
-			doas -u "$name" git pull --force origin master
-		}
-	cd "$dir" || exit 1
-	gmake >/dev/null 2>&1
-	gmake install >/dev/null 2>&1
-	cd /tmp || return 1
+	--infobox "Installing suckless builds ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 8 70
+	cd $repodir
+	git clone https://github.com/swindlesmccoop/luke-dwm-openbsd dwm
+	git clone https://github.com/swindlesmccoop/luke-dwmblocks-openbsd dwmblocks
+	git clone https://github.com/swindlesmccoop/luke-st-openbsd st
+	git clone https://github.com/swindlesmccoop/luke-dmenu-openbsd dmenu
+
+	cd dwm && gmake && gmake install && cd ..
+	cd dwmblocks && gmake && gmake install && cd ..
+	cd st && gmake && gmake install && cd ..
+	cd dmenu && gmake && gmake install && cd ..
 }
 
 pipinstall() {
@@ -123,10 +138,9 @@ installationloop() {
 		echo "$comment" | grep -q "^\".*\"$" &&
 			comment="$(echo "$comment" | sed -E "s/(^\"|\"$)//g")"
 		case "$tag" in
-		"G") gitmakeinstall "$program" "$comment" ;;
+		#"G") gitmakeinstall "$program" "$comment" ;;
 		"P") pipinstall "$program" "$comment" ;;
 		"R") portinstall "$program" "$comment" ;;
-		"M") myportinstall "$program" "$comment" ;;
 		*) maininstall "$program" "$comment" ;;
 		esac
 	done </tmp/progs.csv
@@ -204,6 +218,7 @@ printf "permit nopass root\npermit nopass $USER\n" > /etc/doas.conf
 # the user has been created and has priviledges to run sudo without a password
 # and all build dependencies are installed.
 installationloop
+gitmakeinstall
 
 # Install the dotfiles in the user's home directory, but remove .git dir and
 # other unnecessary files.
