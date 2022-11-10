@@ -234,7 +234,7 @@ rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/
 #echo "blacklist pcspkr" >/etc/modprobe.d/nobeep.conf
 
 # Make zsh the default shell for the user.
-doas -s /usr/local/bin/zsh "$name" >/dev/null 2>&1
+chsh -s /usr/local/bin/zsh "$name"
 doas -u "$name" mkdir -p "/home/$name/.cache/zsh/"
 doas -u "$name" mkdir -p "/home/$name/.config/abook/"
 doas -u "$name" mkdir -p "/home/$name/.config/mpd/playlists/"
