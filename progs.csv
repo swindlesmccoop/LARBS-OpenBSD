@@ -31,7 +31,7 @@
 ,newsboat,"is a terminal RSS client."
 #ONLY FIREFOX IS IN REPOS DUE TO NEEDING CUSTOM PATCHES
 #A,librewolf-bin,"the default browser of LARBS which also comes with ad-blocking and other sensible and necessary features by default."
-,firefox,"is a browser"
+,firefox,"is a browser."
 ,noto-fonts,"is an expansive font package."
 ,noto-emoji,"is an emoji font."
 ,ntfs_3g,"allows accessing NTFS partitions."
