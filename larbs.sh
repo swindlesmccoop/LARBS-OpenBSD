@@ -67,7 +67,7 @@ preinstallmsg() {
 adduserandpass() {
 	# Adds user `$name` with password $pass1.
 	dialog --infobox "Adding user \"$name\"..." 7 50
-	useradd -m -g wheel -s /bin/zsh "$name" >/dev/null 2>&1 ||
+	useradd -m -g wheel -s /usr/local/bin/zsh "$name" >/dev/null 2>&1 ||
 		usermod -a -G wheel "$name" && mkdir -p /home/"$name" && chown "$name":wheel /home/"$name"
 	export repodir="/home/$name/.local/src"
 	mkdir -p "$repodir"
@@ -221,7 +221,7 @@ rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/
 #echo "blacklist pcspkr" >/etc/modprobe.d/nobeep.conf
 
 # Make zsh the default shell for the user.
-doas -s /bin/zsh "$name" >/dev/null 2>&1
+doas -s /usr/local/bin/zsh "$name" >/dev/null 2>&1
 doas -u "$name" mkdir -p "/home/$name/.cache/zsh/"
 doas -u "$name" mkdir -p "/home/$name/.config/abook/"
 doas -u "$name" mkdir -p "/home/$name/.config/mpd/playlists/"
