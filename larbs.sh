@@ -101,8 +101,8 @@ gitmakeinstall() {
 			doas -u "$name" git pull --force origin master
 		}
 	cd "$dir" || exit 1
-	make >/dev/null 2>&1
-	make install >/dev/null 2>&1
+	gmake >/dev/null 2>&1
+	gmake install >/dev/null 2>&1
 	cd /tmp || return 1
 }
 
@@ -164,7 +164,7 @@ finalize() {
 ### This is how everything happens in an intuitive format and order.
 
 # Check if user is root on OpenBSD. Install dialog.
-pkg_add dialog portslist ||
+pkg_add dialog ||
 	error "Are you sure you're running this as the root user, are on OpenBSD and have an internet connection?"
 
 # Welcome user and pick dotfiles.
