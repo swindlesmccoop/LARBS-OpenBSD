@@ -1,0 +1,5 @@
+If I want to install ports from scratch
+- Set up ports tree
+- Set up personal ports tree
+OR
+- Set up binary package repo to get custom packages like sc-im and htop-vim from
