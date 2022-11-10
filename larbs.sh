@@ -181,9 +181,7 @@ preinstallmsg || error "User exited."
 
 ### The rest of the script requires no user input.
 
-# Refresh Arch keyrings.
-
-for x in curl ca-certificates base-devel git ntp zsh; do
+for x in curl ca-certificates base-devel git gmake ntp zsh; do
 	dialog --title "LARBS Installation" \
 		--infobox "Installing \`$x\` which is required to install and configure other programs." 8 70
 	installpkg "$x"
