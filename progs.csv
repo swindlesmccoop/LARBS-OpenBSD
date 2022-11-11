@@ -58,7 +58,7 @@ R,sysutils/sc-im,"is an Excel-like terminal spreadsheet manager."
 ,zsh-syntax-highlighting,"provides syntax highlighting in the shell."
 #A,task-spooler,"queues commands or files for download."
 ,simple-mtpfs,"enables the mounting of cell phones."
-R,sysutils/htop-vim,"is a graphical and colorful system monitor."
+#R,sysutils/htop-vim,"is a graphical and colorful system monitor."
 #DWMBlocks emojis do not work on OpenBSD to my knowledge
 #R,x11/dwmblocks-luke,"serves as the modular status bar."
 R,x11/dmenu-luke,"runs commands and provides a UI for selection."
