@@ -36,7 +36,7 @@
 ,noto-emoji,"is an emoji font."
 ,ntfs_3g,"allows accessing NTFS partitions."
 ,cmixer,"is an audio controller."
-R,sysutils/sc-im,"is an Excel-like terminal spreadsheet manager."
+#R,sysutils/sc-im,"is an Excel-like terminal spreadsheet manager."
 ,maim,"can take quick screenshots at your request."
 ,abook,"is an offline addressbook usable by neomutt."
 ,unclutter,"hides an inactive mouse."
