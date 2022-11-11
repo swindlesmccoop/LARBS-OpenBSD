@@ -61,9 +61,9 @@
 #R,sysutils/htop-vim,"is a graphical and colorful system monitor."
 #DWMBlocks emojis do not work on OpenBSD to my knowledge
 #R,x11/dwmblocks-luke,"serves as the modular status bar."
-R,x11/dwm-luke"is the window manager."
-R,x11/dmenu-luke,"runs commands and provides a UI for selection."
-R,x11/st-luke,"is my custom build of suckless's terminal emulator."
+S,x11/dwm-luke,"is the window manager."
+S,x11/dmenu-luke,"runs commands and provides a UI for selection."
+S,x11/st-luke,"is my custom build of suckless's terminal emulator."
 #A,mutt-wizard-git,"is a light-weight terminal-based email system."
 ,slock,"allows you to lock your computer, and quickly unlock with your password."
 ,socat,"is a utility which establishes two byte streams and transfers data between them."
