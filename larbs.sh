@@ -1,5 +1,4 @@
 #!/bin/sh
-set -x
 # Luke's Auto Rice Boostrapping Script (LARBS)
 # by Luke Smith <luke@lukesmith.xyz>
 # and Swindles McCoop <swindlesmccoop@waifu.club>
@@ -177,14 +176,17 @@ installationloop
 # Install the dotfiles in the user's home directory, but remove .git dir and
 # other unnecessary files.
 dialog --infobox "Downloading and installing config files..." 7 60
-[ -z "$3" ] && branch="master" || branch="$repobranch"
-[ ! -d "$2" ] && mkdir -p "$2"
-chown "$name":wheel "$dir" "$2"
-doas -u "$name" git -C "$repodir" clone --depth 1 \
-	--single-branch --no-tags -q --recursive -b "$branch" \
-	--recurse-submodules "$1" "$dir"
-doas -u "$name" cp -rfT "$dir" "$2"
-
+#[ -z "$3" ] && branch="master" || branch="$repobranch"
+#[ ! -d "$2" ] && mkdir -p "$2"
+#chown "$name":wheel "$dir" "$2"
+#doas -u "$name" git -C "$repodir" clone --depth 1 \
+#	--single-branch --no-tags -q --recursive -b "$branch" \
+#	--recurse-submodules "$1" "$dir"
+#doas -u "$name" cp -rfT "$dir" "$2"
+cd $repodir
+doas -u "$name" git clone --depth 1 --single-branch --recurse-submodules $dotfilesrepo
+cd $dotfilesrepo
+doas -u "$name" cp -rfT * .* /home/$name/
 rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/$name/FUNDING.yml"
 
 # Install vim plugins if not alread present.
